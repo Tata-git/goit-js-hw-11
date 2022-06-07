@@ -1,2 +1,18 @@
 @import './common';
 @import './example';
+
+.load-more.is-hidden {
+  display: none;
+}
+
+.gallery {
+  margin: 10px;
+}
+
+.search-form {
+  margin: 10px;
+}
+
+.load-more {
+  margin: 20 30 30 40px;
+}

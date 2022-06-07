@@ -1,33 +1,50 @@
-// Для HTTP запросов использована библиотека axios.
-const axios = require('axios').default;
-
-// В качестве бэкенда используй публичный API сервиса Pixabay.
+// Імпорт бібліотеки
+import axios from 'axios';
+// Наш ключ API
 const API_KEY = '27859261-e9073de67394be7ab7216c452';
-const BASE_URL = 'https://pixabay.com/api';
-const options = new URLSearchParams({
+// Дефолтні налаштування для запиту axios
+axios.defaults.baseURL = 'https://pixabay.com/api';
+axios.defaults.params = {
   key: API_KEY,
-  // //----------------------!!!------------------------------
-  // // q   //  термин для поиска. То, что будет вводить пользователь.
-  // // URL-кодированный поисковый запрос. Если опущено, возвращаются все изображения. Это значение не может превышать 100 символов. Пример: Example: "yellow+flower"  "желтый+цветок"
-  // //----------------------!!!------------------------------
-  // image_type: photo, // тип изображения. Мы хотим только фотографии, поэтому задай значение photo.
-  // orientation: horizontal, // ориентация фотографии. Задай значение horizontal.
-  // safesearch: true, // фильтр по возрасту. Задай значение true.
-  // // per_page: ,
-});
-//----------------export --
-// top-headlines - главные заголовки class getImages ---------------------
-export default class GetImages {
-  constructor() {
-    this.page = 1;
-  }
-  fetchImages() {
-    //   https://pixabay.com/api/?key=27859261-e9073de67394be7ab7216c452&q=yellow+flowers&image_type=photo
-    const url = `${BASE_URL}/top-headlines?${options}&per_page=40&page=${this.page}`;
+  image_type: 'photo',
+  orientation: 'horizontal',
+  safesearch: true,
+};
+// Об'єкт для запитів до API
+export const ImageService = {
+  page: 1,
+  per_page: 40,
+  searchQuery: '',
 
-    return fetch(url)
-      .then(response => response.json())
-      .then(x => console.log(x))
-      .catch(error => console.log(error));
-  }
-}
+  async fetchImages() {
+    // запит до API
+    const { data } = await axios.get(
+      `/?q=${this.query}&page=${this.page}&per_page=${this.per_page}`
+    );
+
+    this.incrementPage();
+
+    const { hits, total, totalHits } = data;
+    return {
+      hits,
+      totalHits,
+      hasNextPage: this.page * this.per_page < total,
+    };
+  },
+
+  incrementPage() {
+    this.page += 1;
+  },
+
+  resetPage() {
+    this.page = 1;
+  },
+
+  get query() {
+    return this.searchQuery;
+  },
+
+  set query(newQuery) {
+    this.searchQuery = newQuery;
+  },
+};
