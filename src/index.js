@@ -58,7 +58,9 @@ function onLoadMore() {
       });
     })
     .catch(error => {
+      // loadMoreBtn.classList.add('is-hidden');
       console.error(error);
+
       return Notiflix.Notify.info(
         'We are sorry, but you have reached the end of search results.'
       );
@@ -69,7 +71,6 @@ function onSearch(event) {
   event.preventDefault();
   
   const { value } = event.target.elements.searchQuery;
-  // loadMoreBtn.classList.add('is-hidden');
   gallery.innerHTML = '';
   loadMoreBtn.classList.add('is-hidden');
 
