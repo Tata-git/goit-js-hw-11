@@ -67,8 +67,11 @@ function onLoadMore() {
 
 function onSearch(event) {
   event.preventDefault();
+  
   const { value } = event.target.elements.searchQuery;
+  // loadMoreBtn.classList.add('is-hidden');
   gallery.innerHTML = '';
+  loadMoreBtn.classList.add('is-hidden');
 
   ImageService.resetPage();
   ImageService.query = value.trim();
