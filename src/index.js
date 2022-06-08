@@ -21,9 +21,8 @@ loadMoreBtn.addEventListener('click', onLoadMore);
 loadMoreBtn.classList.add('is-hidden');
 
 function loadImages() {
-  // ф-я має повернути promise в зовнішній код
   return ImageService.fetchImages().then(({ hits, hasNextPage }) => {
-    // console.log(hits);
+    console.log(hits);
 
     if (hits.length === 0) {
       loadMoreBtn.classList.add('is-hidden');
@@ -32,7 +31,7 @@ function loadImages() {
         'Sorry, there are no images matching your search query. Please try again.'
       );
     }
-
+    
     if (hasNextPage) {
       loadMoreBtn.classList.remove('is-hidden');
     }
@@ -47,14 +46,15 @@ function onLoadMore() {
     .then(() => {
       ImageService.incrementPage();
       lightbox.refresh();
-      // const { height: cardHeight } = document
-      //   .querySelector('.gallery')
-      //   .firstElementChild.getBoundingClientRect();
 
-      // window.scrollBy({
-      //   top: cardHeight * 2,
-      //   behavior: 'smooth',
-      // });
+      const { height: cardHeight } = document
+        .querySelector('.gallery')
+        .firstElementChild.getBoundingClientRect();
+
+      window.scrollBy({
+        top: cardHeight * 2,
+        behavior: 'smooth',
+      });
     })
     .catch(error => {
       console.error(error);
@@ -70,13 +70,16 @@ function onSearch(event) {
   gallery.innerHTML = '';
 
   ImageService.resetPage();
+  lightbox.refresh();
+
   ImageService.query = value.trim();
 
   if (!ImageService.query) return;
+    // loadMoreBtn.classList.add('is-hidden');
 
-  ImageService.fetchImages().then(({ totalHits }) => {
-    Notiflix.Notify.success(`Hooray! We found ${totalHits} images.`);
-  });
+  // ImageService.fetchImages().then(({ totalHits }) => {
+  //   Notiflix.Notify.success(`Hooray! We found ${totalHits} images.`);
+  // });
 
   loadImages().catch(error => console.error(error));
   event.currentTarget.reset();

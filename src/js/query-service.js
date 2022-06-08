@@ -23,6 +23,7 @@ export const ImageService = {
     );
 
     this.incrementPage();
+    // ф-я має повернути promise в зовнішній код
 
     const { hits, tags, total, totalHits } = data;
     return {
