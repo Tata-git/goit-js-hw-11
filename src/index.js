@@ -31,7 +31,7 @@ function loadImages() {
         'Sorry, there are no images matching your search query. Please try again.'
       );
     }
-    
+
     if (hasNextPage) {
       loadMoreBtn.classList.remove('is-hidden');
     }
@@ -74,8 +74,11 @@ function onSearch(event) {
 
   ImageService.query = value.trim();
 
-  if (!ImageService.query) return;
-    // loadMoreBtn.classList.add('is-hidden');
+  if (!ImageService.query)
+    return Notiflix.Notify.failure(
+      'Sorry, there are no images matching your search query. Please try again.'
+    );
+  // loadMoreBtn.classList.add('is-hidden');
 
   // ImageService.fetchImages().then(({ totalHits }) => {
   //   Notiflix.Notify.success(`Hooray! We found ${totalHits} images.`);
