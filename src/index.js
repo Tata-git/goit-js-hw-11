@@ -21,8 +21,8 @@ loadMoreBtn.addEventListener('click', onLoadMore);
 loadMoreBtn.classList.add('is-hidden');
 
 function loadImages() {
-  return ImageService.fetchImages().then(({ hits, hasNextPage }) => {
-    console.log(hits);
+  return ImageService.fetchImages().then(({ hits, hasNextPage, totalHits }) => {
+    // console.log(hits);
 
     if (hits.length === 0) {
       loadMoreBtn.classList.add('is-hidden');
@@ -38,14 +38,15 @@ function loadImages() {
 
     renderGallery(hits, gallery);
     lightbox.refresh();
+
+    return totalHits;
   });
 }
 
 function onLoadMore() {
   loadImages()
     .then(() => {
-      ImageService.incrementPage();
-      lightbox.refresh();
+      // ImageService.incrementPage();
 
       const { height: cardHeight } = document
         .querySelector('.gallery')
@@ -70,21 +71,19 @@ function onSearch(event) {
   gallery.innerHTML = '';
 
   ImageService.resetPage();
-  lightbox.refresh();
-
   ImageService.query = value.trim();
 
   if (!ImageService.query)
     return Notiflix.Notify.failure(
       'Sorry, there are no images matching your search query. Please try again.'
     );
-  // loadMoreBtn.classList.add('is-hidden');
 
-  // ImageService.fetchImages().then(({ totalHits }) => {
-  //   Notiflix.Notify.success(`Hooray! We found ${totalHits} images.`);
-  // });
-
-  loadImages().catch(error => console.error(error));
+  // loadImages().catch(error => console.error(error));
+  loadImages()
+    .then(totalHits => {
+      Notiflix.Notify.success(`Hooray! We found ${totalHits} images.`);
+    })
+    .catch(error => console.error(error));
   event.currentTarget.reset();
 }
 
