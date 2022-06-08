@@ -1,5 +1,7 @@
 import Notiflix from 'notiflix';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
+// import SimpleLightbox from 'simplelightbox';
+// import 'simplelightbox/dist/simple-lightbox.min.css';
 
 import { ImageService } from './js/query-service';
 import { getRefs } from './js/refs';
@@ -30,6 +32,9 @@ function loadImages() {
 
     renderGallery(hits, gallery);
     return Notiflix.Notify.info(`Hooray! We found ${totalHits} images.`);
+
+    
+
   });
 }
 
