@@ -1,12 +1,19 @@
 import Notiflix from 'notiflix';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
-// import SimpleLightbox from 'simplelightbox';
-// import 'simplelightbox/dist/simple-lightbox.min.css';
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
 
 import { ImageService } from './js/query-service';
 import { getRefs } from './js/refs';
 const { searchForm, gallery, loadMoreBtn } = getRefs();
 import { renderGallery } from './js/render-gallery';
+
+// const lightbox = new SimpleLightbox('.gallery a')
+const lightbox = new SimpleLightbox('.gallery a', {
+  captionsData: 'alt',
+  captionPosition: 'bottom',
+  captionDelay: 250,
+});
 
 searchForm.addEventListener('submit', onSearch);
 loadMoreBtn.addEventListener('click', onLoadMore);
@@ -15,7 +22,7 @@ loadMoreBtn.classList.add('is-hidden');
 
 function loadImages() {
   // ф-я має повернути promise в зовнішній код
-  return ImageService.fetchImages().then(({ hits, totalHits, hasNextPage }) => {
+  return ImageService.fetchImages().then(({ hits, hasNextPage }) => {
     // console.log(hits);
 
     if (hits.length === 0) {
@@ -31,25 +38,23 @@ function loadImages() {
     }
 
     renderGallery(hits, gallery);
-    return Notiflix.Notify.info(`Hooray! We found ${totalHits} images.`);
-
-    
-
+    lightbox.refresh();
   });
 }
 
 function onLoadMore() {
   loadImages()
     .then(() => {
-      // ImageService.incrementPage();
-      const { height: cardHeight } = document
-        .querySelector('.gallery')
-        .firstElementChild.getBoundingClientRect();
+      ImageService.incrementPage();
+      lightbox.refresh();
+      // const { height: cardHeight } = document
+      //   .querySelector('.gallery')
+      //   .firstElementChild.getBoundingClientRect();
 
-      window.scrollBy({
-        top: cardHeight * 2,
-        behavior: 'smooth',
-      });
+      // window.scrollBy({
+      //   top: cardHeight * 2,
+      //   behavior: 'smooth',
+      // });
     })
     .catch(error => {
       console.error(error);
@@ -69,29 +74,12 @@ function onSearch(event) {
 
   if (!ImageService.query) return;
 
+  ImageService.fetchImages().then(({ totalHits }) => {
+    Notiflix.Notify.success(`Hooray! We found ${totalHits} images.`);
+  });
+
   loadImages().catch(error => console.error(error));
-
   event.currentTarget.reset();
-
-  // console.log(searchQueryValue);
 }
 
-//--------------------------------------------------------------------------
-// Notiflix.Notify.success('');
-
-// Notiflix.Notify.failure('');
-
-// Notiflix.Notify.warning('Memento te hominem esse');
-
-//
-
-// console.dir(searchForm);
-//----
-// const searchQueryValue = value.trim();
-//   if (searchQueryValue === '') return;
-//---
-// console.log(searchQueryValue);
-// ImageService.fetchImages(searchQueryValue).then(response =>
-//   console.log(response)
-// );
-//---- тепер нічого не передаємо в ()  ImageService.fetchImages().then(
+//------------------------------------------------------------------

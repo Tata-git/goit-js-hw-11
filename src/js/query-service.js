@@ -24,9 +24,10 @@ export const ImageService = {
 
     this.incrementPage();
 
-    const { hits, total, totalHits } = data;
+    const { hits, tags, total, totalHits } = data;
     return {
       hits,
+      tags,
       totalHits,
       hasNextPage: this.page * this.per_page < total,
     };
